@@ -3,7 +3,6 @@ const parser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 
-const jobsRouter = require('./jobsRouter.js');
 const apiRouter = require('./apiRouter');
 
 const htmlServer = express();
@@ -13,8 +12,7 @@ htmlServer.use(parser.urlencoded({ extended: true }));
 htmlServer.use(morgan('dev'));
 
 htmlServer.use('/', express.static(path.join(__dirname, '../client/dist')));
-htmlServer.use('/api', jobsRouter);
-// htmlServer.use('/api', apiRouter);
+htmlServer.use('/api', apiRouter);
 
 const port = process.env.PORT || 3000;
 
