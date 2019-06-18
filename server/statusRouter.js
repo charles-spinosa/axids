@@ -6,6 +6,6 @@ router
   .post(controller.enqueueJob)
   .get(controller.jobStatus);
 
-router.route('/result/:jobID').get(controller.jobResult);
+router.route('/:jobID/result').get(controller.jobResult);
 
 module.exports = router;

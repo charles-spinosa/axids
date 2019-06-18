@@ -20,9 +20,9 @@ module.exports = {
     return jobs.find({});
   },
   updateOne: (objID, job) => {
-    return jobs.findByIdAndUpdate(objID, job);
+    return jobs.findByIdAndUpdate(objID, job, { useFindAndModify: false });
   },
   deleteOne: objID => {
-    return jobs.findByIdAndDelete(objID);
+    return jobs.findByIdAndDelete(objID, { useFindAndModify: false });
   }
 };
