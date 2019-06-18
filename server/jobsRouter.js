@@ -7,7 +7,7 @@ router
   .post(controller.createNewJobs);
 
 router
-  .route('/jobs/id/:urlID')
+  .route('/jobs/id/:objID')
   .get(controller.getSingleJob)
   .put(controller.updateJob)
   .delete(controller.deleteJob);

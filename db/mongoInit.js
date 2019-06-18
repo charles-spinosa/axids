@@ -6,12 +6,12 @@ mongoose
   .then(() => console.log('Connected to Mongo'));
 
 var jobsSchema = new mongoose.Schema({
-  urlID: { type: Number, index: -1 },
+  // urlID: { type: Number, index: -1 },
   url: String,
   status: String,
   largestImage: String
 });
 
-const urls = mongoose.model('URLs', jobsSchema);
+const jobs = mongoose.model('jobs', jobsSchema);
 
-module.exports = urls;
+module.exports = jobs;

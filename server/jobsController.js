@@ -13,16 +13,40 @@ module.exports = {
       });
   },
   createNewJobs: (req, res) => {
-    //expects an array of URL strings
-    res.status(200).send('hello from /jobs POST');
+    //expects req to contain an array of URL strings
+    helpers
+      .createJob(req.body)
+      .then(data => res.status(200).send('job created'))
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('could not add job(s)');
+      });
   },
   getSingleJob: (req, res) => {
-    res.status(200).send('hello from /jobs/id/# GET');
+    helpers
+      .readOne(req.params.objID)
+      .then(data => res.status(200).json(data))
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('could not find single job');
+      });
   },
   updateJob: (req, res) => {
-    res.status(200).send('hello from /jobs/id/# PUT');
+    helpers
+      .updateOne(req.params.objID, req.body)
+      .then(data => res.status(200).send('job updated'))
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('could not update that job');
+      });
   },
   deleteJob: (req, res) => {
-    res.status(200).send('hello from /jobs/id/# DELETE');
+    helpers
+      .deleteOne(req.params.objID)
+      .then(() => res.status(200).send('job deleted'))
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('could not delete that job');
+      });
   }
 };
