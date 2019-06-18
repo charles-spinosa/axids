@@ -1,4 +1,4 @@
-const mongoHelpers = require('../db/mongoHelpers.js');
+const mongoHelpers = require('../../db/mongoHelpers.js');
 
 module.exports = {
   enqueueJob: (req, res) => {

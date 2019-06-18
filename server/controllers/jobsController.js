@@ -1,4 +1,4 @@
-var helpers = require('../db/mongoHelpers.js');
+var helpers = require('../../db/mongoHelpers.js');
 
 module.exports = {
   getAllJobs: (req, res) => {

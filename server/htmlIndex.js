@@ -3,7 +3,7 @@ const parser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 
-const apiRouter = require('./apiRouter');
+const apiRouter = require('./routers/apiRouter.js');
 
 const htmlServer = express();
 

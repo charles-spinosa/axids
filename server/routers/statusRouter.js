@@ -1,5 +1,5 @@
 var router = require('express').Router();
-var controller = require('./statusController.js');
+var controller = require('../controllers/statusController.js');
 
 router
   .route('/:jobID')
