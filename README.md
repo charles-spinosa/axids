@@ -26,12 +26,20 @@ The frontend should be a single page application with the following:
 
 ### Database
 
-- MongoDB
+- MongoDB:
+  Used to store jobs
+- Redis:
+  Used to implement a Job queue
 
 ### Server
 
-- Express
+- HTML Server (express):
+  Used to respond to RESTful requests, establish web socket connections, and serve static files. Adds incoming jobs to DB, and places existing jobs into Redis jobs queue
+
+- Jobs Server (express):
+  Pulls jobs off of Redis jobs queue, updates MongoDB as jobs are processed
 
 ### Client
 
-- React
+- React:
+  Displays status of jobs to user, provides interface to submit jobs and begin processing of jobs
