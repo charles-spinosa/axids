@@ -1,10 +1,12 @@
-const URLs = require('./mongoInit.js');
+const jobs = require('./mongoInit.js');
 
 module.exports = {
   createOne: () => {},
   createMany: () => {},
   readOne: () => {},
-  readAll: () => {},
+  readAll: () => {
+    return jobs.find({});
+  },
   updateOne: () => {},
   deleteOne: () => {}
 };

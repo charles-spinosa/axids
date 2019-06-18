@@ -8,11 +8,11 @@ const apiRouter = require('./apiRouter');
 
 const htmlServer = express();
 
-htmlServer.use(parser);
+htmlServer.use(parser.json());
 htmlServer.use(parser.urlencoded({ extended: true }));
 htmlServer.use(morgan('dev'));
 
-htmlServer.use('/', express.static(`${__dirname}/../client/dist`));
+htmlServer.use('/', express.static(path.join(__dirname, '../client/dist')));
 htmlServer.use('/api', jobsRouter);
 // htmlServer.use('/api', apiRouter);
 
