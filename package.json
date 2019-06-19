@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-html-dev": "nodemon server/htmlIndex.js",
-    "start-html": "node server/htmlIndex.js"
+    "start-html": "node server/htmlIndex.js",
+    "start-worker-dev": "nodemon server/workerIndex.js",
+    "start-worker": "node server/workerIndex.js"
   },
   "repository": {
     "type": "git",
