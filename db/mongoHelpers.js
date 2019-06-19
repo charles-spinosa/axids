@@ -21,10 +21,19 @@ module.exports = {
     return jobs.find({});
   },
   updateOne: (objID, job) => {
-    return jobs.findByIdAndUpdate(objID, job, {
-      useFindAndModify: false,
-      new: true
-    });
+    return jobs.findByIdAndUpdate(
+      objID,
+      {
+        url: job.url,
+        status: job.status,
+        largestImageURL: job.largestImageURL,
+        lastUpdated: Date.now()
+      },
+      {
+        useFindAndModify: false,
+        new: true
+      }
+    );
   },
   deleteOne: objID => {
     return jobs.findByIdAndDelete(objID, { useFindAndModify: false });

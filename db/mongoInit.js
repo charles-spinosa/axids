@@ -10,7 +10,13 @@ var jobsSchema = new mongoose.Schema({
   url: String,
   status: String,
   largestImageURL: String,
-  largestImageSize: Number
+  lastUpdated: { type: Date, default: Date.now() }
+});
+
+var imagesSchema = new mongoose.Schema({
+  jobID: String,
+  imageSize: Number,
+  imageURL: String
 });
 
 const jobs = mongoose.model('jobs', jobsSchema);

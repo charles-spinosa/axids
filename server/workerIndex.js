@@ -10,6 +10,7 @@ const grabImageURLs = url => {
     idxOfSlash = url.indexOf('/', idxOfSlash + 1);
   }
   baseURL = url.substring(0, idxOfSlash);
+  console.log('baseURL: ', baseURL);
   return request(url).then(data => {
     $ = Cheerio.load(data);
     tags = $('img');
@@ -26,9 +27,22 @@ const grabImageURLs = url => {
         }
       }
     }
-    console.log(URLs);
+    console.log('URLs: ', URLs);
     return URLs;
   });
+};
+
+const reviewImage = url => {
+  let size = 0;
+  return request
+    .get(url)
+    .on('data', chunk => {
+      size += chunk.length;
+      console.log(size);
+    })
+    .on('end', () => {
+      console.log('this is the end of the world as we know it');
+    });
 };
 
 jobsQueue.process(async (job, done) => {
@@ -37,6 +51,11 @@ jobsQueue.process(async (job, done) => {
     job.data.job
   );
   grabImageURLs(job.data.job.url)
-    .then($ => done())
+    .then(async urlArr => {
+      for (let url of urlArr) {
+        await reviewImage(url);
+      }
+      done();
+    })
     .catch(err => console.log(err));
 });
