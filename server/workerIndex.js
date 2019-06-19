@@ -1,9 +1,10 @@
 const Queue = require('bull');
 const jobsQueue = new Queue('jobsQueue');
-const request = require('request-promise-native');
+const request = require('request-promise');
 const Cheerio = require('cheerio');
 const images = require('../db/mongoImageHelpers.js');
 const jobs = require('../db/mongoHelpers.js');
+const bluebird = require('bluebird');
 
 const grabImageURLs = url => {
   let baseURL = '';
@@ -40,14 +41,14 @@ const reviewImage = (url, jobID) => {
     .get(url)
     .on('data', chunk => {
       size += chunk.length;
-      console.log(size);
     })
-    .on('end', () => {
+    .then(() => {
+      console.log(size);
       images.add(jobID, url, size);
     });
 };
 
-jobsQueue.process(async (job, done) => {
+jobsQueue.process((job, done) => {
   console.log(
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n',
     job.data.job
@@ -55,14 +56,26 @@ jobsQueue.process(async (job, done) => {
   try {
     grabImageURLs(job.data.job.url)
       .then(urlArr => {
-        for (let url of urlArr) {
-          reviewImage(url, job.data.job._id);
-        }
-        done();
+        let promArr = urlArr.map(elem => reviewImage(elem, job.data.job._id));
+        bluebird
+          .all(promArr)
+          .then(jobs.updateOne(job.data.job._id, { status: 'finished' }))
+          .then(() => {
+            console.log('all writes complete');
+            done();
+          })
+          .catch(err => {
+            console.log(err);
+            jobs
+              .updateOne(job.data.job._id, { status: 'error storing results' })
+              .then(() => done());
+          });
       })
       .catch(err => console.log(err));
   } catch (err) {
     console.log(err);
-    done();
+    jobs
+      .updateOne(job.data.job._id, { status: 'error grabbing URLs' })
+      .then(() => done());
   }
 });
