@@ -1,4 +1,4 @@
-const jobs = require('./mongoInit.js');
+const jobs = require('./mongoInit.js').jobs;
 
 module.exports = {
   createJob: arr => {
@@ -11,7 +11,6 @@ module.exports = {
       };
       return result;
     });
-    console.log(jobsArr);
     return jobs.insertMany(jobsArr);
   },
   readOne: objID => {
@@ -21,19 +20,10 @@ module.exports = {
     return jobs.find({});
   },
   updateOne: (objID, job) => {
-    return jobs.findByIdAndUpdate(
-      objID,
-      {
-        url: job.url,
-        status: job.status,
-        largestImageURL: job.largestImageURL,
-        lastUpdated: Date.now()
-      },
-      {
-        useFindAndModify: false,
-        new: true
-      }
-    );
+    return jobs.findByIdAndUpdate(objID, job, {
+      useFindAndModify: false,
+      new: true
+    });
   },
   deleteOne: objID => {
     return jobs.findByIdAndDelete(objID, { useFindAndModify: false });

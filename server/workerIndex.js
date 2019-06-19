@@ -2,6 +2,8 @@ const Queue = require('bull');
 const jobsQueue = new Queue('jobsQueue');
 const request = require('request-promise-native');
 const Cheerio = require('cheerio');
+const images = require('../db/mongoImageHelpers.js');
+const jobs = require('../db/mongoHelpers.js');
 
 const grabImageURLs = url => {
   let baseURL = '';
@@ -32,7 +34,7 @@ const grabImageURLs = url => {
   });
 };
 
-const reviewImage = url => {
+const reviewImage = (url, jobID) => {
   let size = 0;
   return request
     .get(url)
@@ -41,7 +43,7 @@ const reviewImage = url => {
       console.log(size);
     })
     .on('end', () => {
-      console.log('this is the end of the world as we know it');
+      images.add(jobID, url, size);
     });
 };
 
@@ -50,12 +52,17 @@ jobsQueue.process(async (job, done) => {
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n',
     job.data.job
   );
-  grabImageURLs(job.data.job.url)
-    .then(async urlArr => {
-      for (let url of urlArr) {
-        await reviewImage(url);
-      }
-      done();
-    })
-    .catch(err => console.log(err));
+  try {
+    grabImageURLs(job.data.job.url)
+      .then(urlArr => {
+        for (let url of urlArr) {
+          reviewImage(url, job.data.job._id);
+        }
+        done();
+      })
+      .catch(err => console.log(err));
+  } catch (err) {
+    console.log(err);
+    done();
+  }
 });

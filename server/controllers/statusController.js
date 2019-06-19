@@ -1,11 +1,15 @@
 const mongoHelpers = require('../../db/mongoHelpers.js');
+const imageHelpers = require('../../db/mongoImageHelpers.js');
 const Queue = require('bull');
 const jobsQueue = new Queue('jobsQueue');
 
 module.exports = {
   enqueueJob: (req, res) => {
     mongoHelpers
-      .updateOne(req.params.jobID, { status: 'queued' })
+      .updateOne(req.params.jobID, {
+        status: 'queued',
+        lastUpdated: Date.now()
+      })
       .then(async data => {
         try {
           let job = await jobsQueue.add({
@@ -34,11 +38,9 @@ module.exports = {
       });
   },
   jobResult: (req, res) => {
-    mongoHelpers
-      .readOne(req.params.jobID)
-      .then(data => {
-        res.status(200).send(data.largestImage);
-      })
+    imageHelpers
+      .findLargest(req.params.jobID)
+      .then(data => res.status(200).json(data))
       .catch(err => {
         console.log(err);
         res.status(500).send('failed to retrieve job result');

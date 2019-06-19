@@ -20,5 +20,6 @@ var imagesSchema = new mongoose.Schema({
 });
 
 const jobs = mongoose.model('jobs', jobsSchema);
+const images = mongoose.model('images', imagesSchema);
 
-module.exports = jobs;
+module.exports = { jobs, images };
