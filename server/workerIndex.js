@@ -59,10 +59,18 @@ jobsQueue.process((job, done) => {
         let promArr = urlArr.map(elem => reviewImage(elem, job.data.job._id));
         bluebird
           .all(promArr)
-          .then(jobs.updateOne(job.data.job._id, { status: 'finished' }))
-          .then(() => {
-            console.log('all writes complete');
-            done();
+          .then(() => images.findLargest(job.data.job._id))
+          .then(largest => {
+            console.log('jobID: ', job.data.job._id);
+            jobs
+              .updateOne(job.data.job._id, {
+                status: 'finished',
+                largestImageURL: largest[0].imageURL
+              })
+              .then(() => {
+                console.log('all writes complete');
+                done();
+              });
           })
           .catch(err => {
             console.log(err);
