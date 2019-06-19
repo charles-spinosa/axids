@@ -6,7 +6,8 @@ module.exports = {
       let result = {
         url: elem,
         status: 'not queued',
-        largestImage: null
+        largestImageURL: null,
+        largestImageSize: 0
       };
       return result;
     });
@@ -20,7 +21,10 @@ module.exports = {
     return jobs.find({});
   },
   updateOne: (objID, job) => {
-    return jobs.findByIdAndUpdate(objID, job, { useFindAndModify: false });
+    return jobs.findByIdAndUpdate(objID, job, {
+      useFindAndModify: false,
+      new: true
+    });
   },
   deleteOne: objID => {
     return jobs.findByIdAndDelete(objID, { useFindAndModify: false });

@@ -1,8 +1,26 @@
 const mongoHelpers = require('../../db/mongoHelpers.js');
+const Queue = require('bull');
+const jobsQueue = new Queue('jobsQueue');
 
 module.exports = {
   enqueueJob: (req, res) => {
-    //redisJobQueue.push(mongo.find(req.params.jobID))
+    mongoHelpers
+      .updateOne(req.params.jobID, { status: 'queued' })
+      .then(async data => {
+        try {
+          let job = await jobsQueue.add({
+            job: data
+          });
+
+          res.status(200).send(`job ${req.params.jobID} queued`);
+        } catch (err) {
+          res.status(500).send('failed to enqueue job');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('failed to enqueue job');
+      });
   },
   jobStatus: (req, res) => {
     mongoHelpers

@@ -16,7 +16,7 @@ module.exports = {
     //expects req to contain an array of URL strings
     helpers
       .createJob(req.body)
-      .then(data => res.status(200).send('job created'))
+      .then(data => res.status(200).send('job(s) created'))
       .catch(err => {
         console.log(err);
         res.status(500).send('could not add job(s)');
