@@ -6,11 +6,11 @@ mongoose
   .then(() => console.log('Connected to Mongo'));
 
 var jobsSchema = new mongoose.Schema({
-  // urlID: { type: Number, index: -1 },
   url: String,
   status: String,
   largestImageURL: String,
-  lastUpdated: { type: Date, default: Date.now() }
+  lastUpdated: { type: Date, default: Date.now() },
+  createdAt: { type: Date, default: Date.now() }
 });
 
 var imagesSchema = new mongoose.Schema({

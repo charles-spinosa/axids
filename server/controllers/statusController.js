@@ -12,7 +12,7 @@ module.exports = {
       })
       .then(async data => {
         try {
-          let job = await jobsQueue.add({
+          await jobsQueue.add({
             job: data
           });
 
