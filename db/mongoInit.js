@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+mongoose.Promise = require('bluebird');
 
 mongoose
   .connect('mongodb://localhost/axiad', { useNewUrlParser: true })
@@ -10,9 +10,16 @@ var jobsSchema = new mongoose.Schema({
   url: String,
   status: String,
   largestImageURL: String,
-  largestImageSize: Number
+  lastUpdated: { type: Date, default: Date.now() }
+});
+
+var imagesSchema = new mongoose.Schema({
+  jobID: String,
+  imageSize: Number,
+  imageURL: String
 });
 
 const jobs = mongoose.model('jobs', jobsSchema);
+const images = mongoose.model('images', imagesSchema);
 
-module.exports = jobs;
+module.exports = { jobs, images };

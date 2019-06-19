@@ -1,4 +1,4 @@
-const jobs = require('./mongoInit.js');
+const jobs = require('./mongoInit.js').jobs;
 
 module.exports = {
   createJob: arr => {
@@ -11,7 +11,6 @@ module.exports = {
       };
       return result;
     });
-    console.log(jobsArr);
     return jobs.insertMany(jobsArr);
   },
   readOne: objID => {
