@@ -6,17 +6,18 @@ mongoose
   .then(() => console.log('Connected to Mongo'));
 
 var jobsSchema = new mongoose.Schema({
-  url: String,
-  status: String,
-  largestImageURL: String,
+  url: String, //google.com
+  status: String, //not - queued
+  largestImageURL: String, // null
   lastUpdated: { type: Date, default: Date.now() },
   createdAt: { type: Date, default: Date.now() }
+  // _id: ObjectID(aaaaaaaaaa)
 });
 
 var imagesSchema = new mongoose.Schema({
-  jobID: String,
-  imageSize: Number,
-  imageURL: String
+  jobID: String, //aaaaaaaaaaa
+  imageSize: Number, //64k
+  imageURL: String // www.cdn.com/photo
 });
 
 const jobs = mongoose.model('jobs', jobsSchema);

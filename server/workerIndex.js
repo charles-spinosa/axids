@@ -21,9 +21,13 @@ const grabImageURLs = url => {
     let URLs = [];
     for (let key in tags) {
       if (tags[key].type === 'tag' && tags[key].name === 'img') {
-        if (tags[key].attribs.src.includes('//')) {
+        if (
+          tags[key].attribs.src.includes(
+            '//' && !tags[key].attribs.src.includes('http')
+          )
+        ) {
           URLs.push('http:' + tags[key].attribs.src);
-        } else if (!tags[key].attribs.src.includes('https')) {
+        } else if (!tags[key].attribs.src.includes('http')) {
           URLs.push(baseURL + tags[key].attribs.src);
         } else {
           URLs.push(tags[key].attribs.src);
@@ -56,34 +60,43 @@ jobsQueue.process((job, done) => {
   try {
     grabImageURLs(job.data.job.url)
       .then(urlArr => {
-        let promArr = urlArr.map(elem => reviewImage(elem, job.data.job._id));
-        bluebird
-          .all(promArr)
-          .then(() => images.findLargest(job.data.job._id))
-          .then(largest => {
-            console.log('jobID: ', job.data.job._id);
-            jobs
-              .updateOne(job.data.job._id, {
-                status: 'finished',
-                largestImageURL: largest[0].imageURL
-              })
-              .then(() => {
-                console.log('all writes complete');
-                done();
-              });
-          })
-          .catch(err => {
-            console.log(err);
-            jobs
-              .updateOne(job.data.job._id, { status: 'error storing results' })
-              .then(() => done());
-          });
+        if (urlArr.length === 0) {
+          jobs.updateOne(job.data.job._id, { status: 'no images' }).then(done);
+        } else {
+          let promArr = urlArr.map(elem => reviewImage(elem, job.data.job._id));
+          bluebird
+            .all(promArr)
+            .then(() => images.findLargest(job.data.job._id))
+            .then(largest => {
+              console.log('jobID: ', job.data.job._id);
+              jobs
+                .updateOne(job.data.job._id, {
+                  status: 'finished',
+                  largestImageURL: largest[0].imageURL
+                })
+                .then(() => {
+                  console.log('all writes complete');
+                  done();
+                });
+            })
+            .catch(err => {
+              console.log(err);
+              jobs
+                .updateOne(job.data.job._id, {
+                  status: 'error storing results'
+                })
+                .then(() => done());
+            });
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        jobs.updateOne(job.data.job._id, { status: 'URL error' }).then(done);
+      });
   } catch (err) {
     console.log(err);
     jobs
       .updateOne(job.data.job._id, { status: 'error grabbing URLs' })
-      .then(() => done());
+      .then(done);
   }
 });

@@ -9,27 +9,54 @@ class App extends React.Component {
     this.state = {
       jobs: []
     };
+    this.deleteJob = this.deleteJob.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.enqueueJob = this.enqueueJob.bind(this);
+    this.addJob = this.addJob.bind(this);
   }
 
-  componentDidMount() {
+  fetchData() {
     Axios.get('/api/jobs').then(data => {
-      this.setState(
-        {
-          jobs: data.data.sort(
-            (a, b) => Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated)
-          )
-        },
-        () => console.log(this.state)
-      );
+      let sorted = data.data.slice().sort((a, b) => {
+        return new Date(b.lastUpdated) - new Date(a.lastUpdated);
+        // Date.parse(b.createdAt) - Date.parse(a.createdAt);
+      });
+      console.log(sorted);
+      this.setState({
+        jobs: sorted
+      });
     });
   }
 
+  componentDidMount() {
+    this.fetchData();
+    // setInterval(this.fetchData, 5000);
+  }
+
+  deleteJob(jobID) {
+    Axios.delete('/api/jobs/id/' + jobID).then(this.fetchData);
+  }
+
+  enqueueJob(jobID) {
+    Axios.post(`/api/status/${jobID}`).then(this.fetchData);
+  }
+
+  addJob(string) {
+    string = string.split(',');
+    return Axios.post(`/api/jobs`, string).then(this.fetchData);
+  }
+
   render() {
+    console.log(this.state);
     return (
       <div id="main-app">
-        <h1>Biggest Image Finder :D</h1>
-        <JobCreator />
-        <JobList jobs={this.state.jobs} />
+        <h1>Bigmage Finder :D</h1>
+        <JobCreator addJob={this.addJob} />
+        <JobList
+          jobs={this.state.jobs}
+          deleteJob={this.deleteJob}
+          enqueueJob={this.enqueueJob}
+        />
       </div>
     );
   }

@@ -12,7 +12,7 @@ class JobCreator extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.setState({ url: '' });
+    this.props.addJob(this.state.url).then(() => this.setState({ url: '' }));
   }
 
   handleChange(e) {
@@ -32,10 +32,11 @@ class JobCreator extends React.Component {
             value={this.state.url}
             onChange={this.handleChange}
           />
-          <button type="submit">Submit list of comma separated URLs</button>
+          <button type="submit">Submit</button>
         </form>
         <br />
-        URLs must follow the format: "http://www.mydomain.com/"
+        URLs must be comma separated URLs following the format:
+        "http://www.mydomain.com/"
       </div>
     );
   }
