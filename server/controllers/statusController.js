@@ -18,12 +18,12 @@ module.exports = {
 
           res.status(200).send(`job ${req.params.jobID} queued`);
         } catch (err) {
-          res.status(500).send('failed to enqueue job');
+          res.status(501).send('failed to enqueue job');
         }
       })
       .catch(err => {
         console.log(err);
-        res.status(500).send('failed to enqueue job');
+        res.status(502).send('failed to enqueue job');
       });
   },
   jobStatus: (req, res) => {

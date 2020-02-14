@@ -12,7 +12,7 @@ const grabImageURLs = url => {
   for (let i = 0; i < 3; i++) {
     idxOfSlash = url.indexOf('/', idxOfSlash + 1);
   }
-  baseURL = url.substring(0, idxOfSlash);
+  baseURL = url.substring(0, idxOfSlash) + '/';
   console.log('baseURL: ', baseURL);
   return request(url).then(data => {
     $ = Cheerio.load(data);
@@ -21,16 +21,20 @@ const grabImageURLs = url => {
     let URLs = [];
     for (let key in tags) {
       if (tags[key].type === 'tag' && tags[key].name === 'img') {
-        if (
-          tags[key].attribs.src.includes(
-            '//' && !tags[key].attribs.src.includes('http')
-          )
-        ) {
-          URLs.push('http:' + tags[key].attribs.src);
-        } else if (!tags[key].attribs.src.includes('http')) {
-          URLs.push(baseURL + tags[key].attribs.src);
-        } else {
-          URLs.push(tags[key].attribs.src);
+        console.log(tags[key].attribs.src);
+        console.log('--------------');
+        if (tags[key].attribs.src) {
+          if (
+            tags[key].attribs.src.includes(
+              '//' && !tags[key].attribs.src.includes('http')
+            )
+          ) {
+            URLs.push('http:' + tags[key].attribs.src);
+          } else if (!tags[key].attribs.src.includes('http')) {
+            URLs.push(baseURL + tags[key].attribs.src);
+          } else {
+            URLs.push(tags[key].attribs.src);
+          }
         }
       }
     }

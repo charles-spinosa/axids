@@ -13,7 +13,7 @@ class JobItem extends React.Component {
 
   getLargest() {
     Axios.get(`/api/status/${this.props.job._id}/result`).then(data => {
-      console.log(data.data[0]);
+      console.log(data);
       this.setState({
         largest: data.data[0].imageURL,
         size: data.data[0].imageSize

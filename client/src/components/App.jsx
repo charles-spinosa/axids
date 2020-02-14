@@ -30,7 +30,9 @@ class App extends React.Component {
 
   componentDidMount() {
     this.fetchData();
-    // setInterval(this.fetchData, 5000);
+
+    // long polling
+    setInterval(this.fetchData, 5000);
   }
 
   deleteJob(jobID) {
@@ -42,7 +44,7 @@ class App extends React.Component {
   }
 
   addJob(string) {
-    string = string.split(',');
+    string = string.split(' ');
     return Axios.post(`/api/jobs`, string).then(this.fetchData);
   }
 

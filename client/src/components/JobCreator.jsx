@@ -35,7 +35,7 @@ class JobCreator extends React.Component {
           <button type="submit">Submit</button>
         </form>
         <br />
-        URLs must be comma separated URLs following the format:
+        URLs must be space separated URLs following the format:
         "http://www.mydomain.com/"
       </div>
     );
